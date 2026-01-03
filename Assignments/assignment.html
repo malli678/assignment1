@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 60%;
+      margin-top: 20px;
+    }
+
+    th,
+    td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: center;
+    }
+
+    .fail {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h2>Student Names</h2>
+  <ul id="studentList"></ul>
+
+  <h2>Students Scored More Than 60</h2>
+  <ul id="passList"></ul>
+
+  <h2>Department Count</h2>
+  <ul id="deptCount"></ul>
+
+  <h2>Top Scorer</h2>
+  <p id="topper"></p>
+
+  <h2>Student Table</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Marks</th>
+        <th>Department</th>
+      </tr>
+    </thead>
+    <tbody id="studentTable"></tbody>
+  </table>
+
+  <h2>Average Marks</h2>
+  <p id="average"></p>
+
+  <h2>CSE Students</h2>
+  <ul id="cseList"></ul>
+
+  <h2>Sorted by Marks (Descending)</h2>
+  <ul id="sortedList"></ul>
+
+  <script>
+    // GIVEN DATA (FIRST 5)
+    let students = [
+      { id: 1, name: "Amit", marks: 78, department: "CSE" },
+      { id: 2, name: "Priya", marks: 92, department: "ECE" },
+      { id: 3, name: "Rahul", marks: 45, department: "MECH" },
+      { id: 4, name: "Sneha", marks: 66, department: "CSE" },
+      { id: 5, name: "Kiran", marks: 88, department: "ECE" }
+    ];
+
+    /*  Display all student names */
+    let studentList = document.getElementById("studentList");
+    students.forEach(s => {
+      let li = document.createElement("li");
+      li.textContent = s.name;
+      studentList.appendChild(li);
+    });
+
+    /* Display students with marks > 60 */
+    let passList = document.getElementById("passList");
+    students.filter(s => s.marks > 60).forEach(s => {
+      let li = document.createElement("li");
+      li.textContent = `${s.name} - ${s.marks}`;
+      passList.appendChild(li);
+    });
+
+    /*  Count students in each department */
+    let deptCount = students.reduce((acc, s) => {
+      acc[s.department] = (acc[s.department] || 0) + 1;
+      return acc;
+    }, {});
+
+    let deptUl = document.getElementById("deptCount");
+    for (let dept in deptCount) {
+      let li = document.createElement("li");
+      li.textContent = `${dept}: ${deptCount[dept]}`;
+      deptUl.appendChild(li);
+    }
+
+    /*  Find highest marks */
+    let topper = students.reduce((max, s) =>
+      s.marks > max.marks ? s : max
+    );
+    document.getElementById("topper").textContent =
+      `${topper.name} (${topper.marks})`;
+
+    /*  Display students in table */
+    let tableBody = document.getElementById("studentTable");
+    students.forEach(s => {
+      let row = document.createElement("tr");
+      if (s.marks < 50) row.classList.add("fail");
+
+      row.innerHTML = `
+        <td>${s.name}</td>
+        <td>${s.marks}</td>
+        <td>${s.department}</td>
+      `;
+      tableBody.appendChild(row);
+    });
+
+    /*  Average marks */
+    let totalMarks = students.reduce((sum, s) => sum + s.marks, 0);
+    let average = (totalMarks / students.length).toFixed(2);
+    document.getElementById("average").textContent = average;
+
+    /*  Display only CSE students */
+    let cseList = document.getElementById("cseList");
+    students.filter(s => s.department === "CSE").forEach(s => {
+      let li = document.createElement("li");
+      li.textContent = s.name;
+      cseList.appendChild(li);
+    });
+
+    /*  Sort by marks descending */
+    let sortedList = document.getElementById("sortedList");
+    [...students].sort((a, b) => b.marks - a.marks).forEach(s => {
+      let li = document.createElement("li");
+      li.textContent = `${s.name} - ${s.marks}`;
+      sortedList.appendChild(li);
+    });
+
+    /* Add new student & update list */
+    students.push({
+      id: 6,
+      name: "Ramesh",
+      marks: 49,
+      department: "CSE"
+    });
+
+    let newLi = document.createElement("li");
+    newLi.textContent = "Ramesh (Added)";
+    if (49 < 50) newLi.classList.add("fail");
+    studentList.appendChild(newLi);
+  </script>
+
+</body>
+
+</html>
